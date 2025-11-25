@@ -34,7 +34,7 @@ jobs:
       - name: Upload build Artifact
         uses: actions/upload-artifact@v1
         with:
-          name: my-jar
+          name: cicd-test-0.0.1-SNAPSHOT.jar
           path: build/libs/${{ env.PROJECT_JAR_NAME }}
 
       - name: Upload Dockerfile

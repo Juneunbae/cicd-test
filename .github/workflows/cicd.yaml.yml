@@ -1,0 +1,44 @@
+name: CICD
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  PROJECT_JAR_NAME: cicd-test-0.0.1-SNAPSHOT.jar
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Create application.yaml
+        run: |
+          echo "${{ secrets.APPLICATION_YAML }}" > src/main/resources/application.yaml
+
+      - name: Java Setup
+        uses: actions/setup-java@v1
+        with:
+          java-version: '21'
+          java-package: 'eclipse-temurin'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew clean build -x test
+
+      - name: Upload build Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: my-jar
+          path: build/libs/${{ env.PROJECT_JAR_NAME }}
+
+      - name: Upload Dockerfile
+        uses: actions/upload-artifact@v1
+        with:
+          name: my-dockerfile
+          path: Dockerfile
